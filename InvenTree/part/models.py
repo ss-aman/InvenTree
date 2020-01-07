@@ -18,7 +18,7 @@ from django.db.models import Sum
 from django.db.models import prefetch_related_objects
 from django.core.validators import MinValueValidator
 
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.db.models.signals import pre_delete
 from django.dispatch import receiver
 
@@ -36,6 +36,8 @@ from InvenTree.fields import InvenTreeURLField
 from InvenTree.status_codes import BuildStatus, StockStatus, OrderStatus
 
 from company.models import SupplierPart
+
+User = get_user_model()
 
 
 class PartCategory(InvenTreeTree):

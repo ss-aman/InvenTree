@@ -7,7 +7,7 @@ from __future__ import unicode_literals
 
 from datetime import datetime
 
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.utils.translation import ugettext as _
 from django.core.exceptions import ValidationError
 
@@ -22,6 +22,7 @@ from InvenTree.fields import InvenTreeURLField
 from stock.models import StockItem
 from part.models import Part, BomItem
 
+User = get_user_model()
 
 class Build(models.Model):
     """ A Build object organises the creation of new parts from the component parts.

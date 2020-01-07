@@ -9,7 +9,7 @@ import os
 
 import math
 from decimal import Decimal
-
+from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator
 from django.db import models
 from django.db.models import Sum
@@ -21,6 +21,8 @@ from django.conf import settings
 from InvenTree.fields import InvenTreeURLField
 from InvenTree.status_codes import OrderStatus
 from common.models import Currency
+
+User = get_user_model()
 
 
 def rename_company_image(instance, filename):
@@ -406,3 +408,13 @@ class SupplierPriceBreak(models.Model):
             mpn=self.part.MPN,
             cost=self.cost,
             quan=self.quantity)
+
+
+class Employee(models.Model):
+    company = models.ForeignKey('company.Company', on_delete=models.CASCADE)
+    job_role = models.CharField(max_length=50)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return "{} - Profile {}".format(self.user, self.job_role)
+

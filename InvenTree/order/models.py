@@ -8,7 +8,7 @@ from django.db import models, transaction
 from django.db.models import F
 from django.core.validators import MinValueValidator
 from django.core.exceptions import ValidationError
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.urls import reverse
 from django.utils.translation import ugettext as _
 
@@ -19,6 +19,8 @@ from company.models import Company, SupplierPart
 
 from InvenTree.helpers import decimal2string
 from InvenTree.status_codes import OrderStatus
+
+User = get_user_model()
 
 
 class Order(models.Model):

@@ -5,10 +5,11 @@ Serializers used in various InvenTree apps
 
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+from django.contrib.auth import get_user_model
 
 from rest_framework import serializers
 
-from django.contrib.auth.models import User
+User = get_user_model()
 
 
 class UserSerializer(serializers.ModelSerializer):

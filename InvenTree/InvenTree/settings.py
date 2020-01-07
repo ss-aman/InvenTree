@@ -89,6 +89,7 @@ INSTALLED_APPS = [
     'company.apps.CompanyConfig',
     'build.apps.BuildConfig',
     'order.apps.OrderConfig',
+    'users',
 
     # Third part add-ons
     'django_filters',               # Extended filter functionality
@@ -126,6 +127,8 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'InvenTree.middleware.AuthRequiredMiddleware',
 ]
+
+# AUTH_USER_MODEL = 'users.User'
 
 if CONFIG.get('log_queries', False):
     MIDDLEWARE.append('InvenTree.middleware.QueryCountMiddleware')
@@ -286,3 +289,4 @@ DBBACKUP_STORAGE = 'django.core.files.storage.FileSystemStorage'
 DBBACKUP_STORAGE_OPTIONS = {
     'location': CONFIG.get('backup_dir', tempfile.gettempdir()),
 }
+

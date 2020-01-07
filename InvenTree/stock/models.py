@@ -12,7 +12,7 @@ from django.urls import reverse
 
 from django.db import models, transaction
 from django.core.validators import MinValueValidator
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.db.models.signals import pre_delete
 from django.dispatch import receiver
 
@@ -27,6 +27,8 @@ from InvenTree.models import InvenTreeTree
 from InvenTree.fields import InvenTreeURLField
 
 from part.models import Part
+
+User = get_user_model()
 
 
 class StockLocation(InvenTreeTree):

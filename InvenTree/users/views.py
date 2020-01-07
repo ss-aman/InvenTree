@@ -1,5 +1,5 @@
 from rest_framework import generics, permissions
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
 from .serializers import UserSerializer
 
@@ -7,6 +7,8 @@ from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from rest_framework import status
+
+User = get_user_model()
 
 
 class UserDetail(generics.RetrieveAPIView):
