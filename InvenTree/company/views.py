@@ -7,7 +7,7 @@ Django views for interacting with Company app
 from __future__ import unicode_literals
 
 from django.views.generic import DetailView, ListView
-
+from django.contrib.auth import get_user_model
 from django.forms import HiddenInput
 
 from InvenTree.views import AjaxCreateView, AjaxUpdateView, AjaxDeleteView
@@ -24,6 +24,8 @@ from .forms import EditCompanyForm
 from .forms import CompanyImageForm
 from .forms import EditSupplierPartForm
 from .forms import EditPriceBreakForm
+
+User = get_user_model()
 
 
 class CompanyIndex(ListView):
@@ -331,3 +333,4 @@ class PriceBreakDelete(AjaxDeleteView):
     model = SupplierPriceBreak
     ajax_form_title = "Delete Price Break"
     ajax_template_name = 'modal_delete_form.html'
+

@@ -1,0 +1,18 @@
+   <div>
+    {% for u in user_list %}
+    <div>
+        {{ u.first_name }}
+        {{u.username}}
+        {{u.employee.job_role}}
+    </div>
+    {%endfor %}
+    <div>
+       Filter
+       By User Type
+
+
+   </div>
+
+   </div>
+
+   <a href="{% url 'create_user' %}">Create User</a>

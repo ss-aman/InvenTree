@@ -1,12 +1,21 @@
+import pdb
 from rest_framework import generics, permissions
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
-from .serializers import UserSerializer
+from django.http import HttpResponseRedirect
+from django.urls import reverse_lazy
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from rest_framework import status
+
+from company.models import Employee
+
+from .serializers import UserSerializer
+
+from .forms import UserCreationForm
 
 User = get_user_model()
 
@@ -58,3 +67,29 @@ class GetAuthToken(ObtainAuthToken):
         except (AttributeError, ObjectDoesNotExist):
             return Response({"error": "Bad request"},
                             status=status.HTTP_400_BAD_REQUEST)
+
+
+class UserListView(ListView):
+    template_name = 'user_list.html'
+    model = User
+    paginated_by = 10
+    context_object_name = 'user_list'
+
+
+
+
+class CreateUserView(CreateView):
+    model = User
+    template_name = 'user_form.html'
+    form_class = UserCreationForm
+    success_url = reverse_lazy('user-list')
+
+    def form_valid(self, form):
+        user = form.save()
+        user.is_active = False
+        user.save()
+
+        job_role = form.cleaned_data['job_role']
+        emp = Employee.objects.create(user=user, job_role=job_role)
+
+        return HttpResponseRedirect(self.get_success_url())
