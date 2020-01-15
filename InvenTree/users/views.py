@@ -11,11 +11,11 @@ from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from rest_framework import status
 
-from company.models import Employee
+# from company.models import Employee
 
 from .serializers import UserSerializer
 
-from .forms import UserCreationForm
+from .forms import UserCreationForm, UserUpdateForm
 
 User = get_user_model()
 
@@ -76,20 +76,23 @@ class UserListView(ListView):
     context_object_name = 'user_list'
 
 
-
-
 class CreateUserView(CreateView):
     model = User
     template_name = 'user_form.html'
     form_class = UserCreationForm
     success_url = reverse_lazy('user-list')
 
-    def form_valid(self, form):
-        user = form.save()
-        user.is_active = False
-        user.save()
 
-        job_role = form.cleaned_data['job_role']
-        emp = Employee.objects.create(user=user, job_role=job_role)
+    # def form_valid(self, form):
+    #     user = form.save()
+    #     user.is_active = False
+    #     user.save()
+    #     return HttpResponseRedirect(self.get_success_url())
 
-        return HttpResponseRedirect(self.get_success_url())
+
+class UpdateUserView(UpdateView):
+    model = User
+    template_name = 'user_form.html'
+    form_class = UserUpdateForm
+    success_url = reverse_lazy('user-list')
+    # pk_url_kwarg = 'pk'

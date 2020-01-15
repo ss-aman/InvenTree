@@ -128,7 +128,7 @@ MIDDLEWARE = [
     'InvenTree.middleware.AuthRequiredMiddleware',
 ]
 
-# AUTH_USER_MODEL = 'users.User'
+AUTH_USER_MODEL = 'users.User'
 
 if CONFIG.get('log_queries', False):
     MIDDLEWARE.append('InvenTree.middleware.QueryCountMiddleware')

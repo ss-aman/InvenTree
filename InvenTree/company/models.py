@@ -410,15 +410,3 @@ class SupplierPriceBreak(models.Model):
             quan=self.quantity)
 
 
-
-EMPLOYEE_TYPES = {
-
-}
-
-class Employee(models.Model):
-    company = models.ForeignKey('company.Company', on_delete=models.CASCADE, null=True)
-    job_role = models.CharField(max_length=50)
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='employee')
-
-    def __str__(self):
-        return "{} - Profile {}".format(self.user, self.job_role)

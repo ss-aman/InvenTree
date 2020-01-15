@@ -3,7 +3,10 @@
     <div>
         {{ u.first_name }}
         {{u.username}}
-        {{u.employee.job_role}}
+        {{u.job_role}}
+    {{u.pk}}
+    <a href="{% url 'update-user' %}">edit</a>
+
     </div>
     {%endfor %}
     <div>
@@ -15,4 +18,4 @@
 
    </div>
 
-   <a href="{% url 'create_user' %}">Create User</a>
+   <a href="{% url 'create-user' %}">Create User</a>
