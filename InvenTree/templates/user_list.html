@@ -5,7 +5,7 @@
         {{u.username}}
         {{u.job_role}}
     {{u.pk}}
-    <a href="{% url 'update-user' %}">edit</a>
+    <a href="{% url 'update-user' u.pk %}">edit</a>
 
     </div>
     {%endfor %}
