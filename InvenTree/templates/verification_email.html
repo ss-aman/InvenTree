@@ -1,0 +1,5 @@
+Hi {{user.get_full_name}},
+
+Your account is created on Inventree. Please click on link below to activate your account.
+
+<a href="http://{{ domain }}{% url 'acount-activate' uid token %}">activate token</a>

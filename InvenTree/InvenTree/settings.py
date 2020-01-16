@@ -290,3 +290,4 @@ DBBACKUP_STORAGE_OPTIONS = {
     'location': CONFIG.get('backup_dir', tempfile.gettempdir()),
 }
 
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

@@ -4,7 +4,10 @@ from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView, TemplateView
+from django.template.loader import render_to_string
+from django.contrib.sites.shortcuts import get_current_site
+from django.http import JsonResponse
 
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
@@ -16,6 +19,7 @@ from rest_framework import status
 from .serializers import UserSerializer
 
 from .forms import UserCreationForm, UserUpdateForm
+from .mail_verification import get_token_generator
 
 User = get_user_model()
 
@@ -83,11 +87,39 @@ class CreateUserView(CreateView):
     success_url = reverse_lazy('user-list')
 
 
-    # def form_valid(self, form):
-    #     user = form.save()
-    #     user.is_active = False
-    #     user.save()
-    #     return HttpResponseRedirect(self.get_success_url())
+    def form_valid(self, form):
+        user = form.save()
+        user.is_active = False
+        user.save()
+
+        uid, token = get_token_generator().generate_uid_token(user)
+        current_site = get_current_site(self.request)
+        message = render_to_string('verification_email.html', {
+                'user': user,
+                'domain': current_site.domain,
+                'uid': uid,
+                'token': token,
+            })
+        user.email_user('account activation mail', message, 'inven@inventree.com')
+
+        return JsonResponse({'message': 'Usre created'})
+
+
+class AccountActivationView(TemplateView):
+    template_name = 'verification_result.html'
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        uid = kwargs.get('uid')
+        token = kwargs.get('token')
+        user = get_token_generator().validate_uid_token(uid, token)
+        context['result'] = False
+        if user:
+            user.is_active = True
+            user.save()
+            context['result'] = True
+            context['user'] = user
+        return context
 
 
 class UpdateUserView(UpdateView):
