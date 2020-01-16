@@ -6,6 +6,10 @@
         {{u.job_role}}
     {{u.pk}}
     <a href="{% url 'update-user' u.pk %}">edit</a>
+    <form method="POST" action="{% url 'delete-user' u.pk %}">
+        {% csrf_token %}
+        <input type="button" value="delete">
+    </form>
 
     </div>
     {%endfor %}

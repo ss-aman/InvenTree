@@ -13,31 +13,15 @@ from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework import viewsets
 
 # from company.models import Employee
 
-from .serializers import UserSerializer
+from .serializers import UserSerializer, PasswordChangeSerializer
 
-from .forms import UserCreationForm, UserUpdateForm
 from .mail_verification import get_token_generator
 
 User = get_user_model()
-
-
-class UserDetail(generics.RetrieveAPIView):
-    """ Detail endpoint for a single user """
-
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-    permission_classes = (permissions.IsAuthenticated,)
-
-
-class UserList(generics.ListAPIView):
-    """ List endpoint for detail on all users """
-
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-    permission_classes = (permissions.IsAuthenticated,)
 
 
 class GetAuthToken(ObtainAuthToken):
@@ -73,25 +57,14 @@ class GetAuthToken(ObtainAuthToken):
                             status=status.HTTP_400_BAD_REQUEST)
 
 
-class UserListView(ListView):
-    template_name = 'user_list.html'
-    model = User
-    paginated_by = 10
-    context_object_name = 'user_list'
+# todo set frontend site domain, ser permission_CLASSES
+class UserModelViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    # permission_classes = (permissions.IsAuthenticated,)
 
-
-class CreateUserView(CreateView):
-    model = User
-    template_name = 'user_form.html'
-    form_class = UserCreationForm
-    success_url = reverse_lazy('user-list')
-
-
-    def form_valid(self, form):
-        user = form.save()
-        user.is_active = False
-        user.save()
-
+    def perform_create(self, serailizer):
+        user = serailizer.save(password='')
         uid, token = get_token_generator().generate_uid_token(user)
         current_site = get_current_site(self.request)
         message = render_to_string('verification_email.html', {
@@ -102,29 +75,27 @@ class CreateUserView(CreateView):
             })
         user.email_user('account activation mail', message, 'inven@inventree.com')
 
-        return JsonResponse({'message': 'Usre created'})
 
-
-class AccountActivationView(TemplateView):
-    template_name = 'verification_result.html'
-
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
-        uid = kwargs.get('uid')
-        token = kwargs.get('token')
+class AccountActivationView(generics.CreateAPIView):
+    serializer_class = PasswordChangeSerializer
+    permission_classes = ()
+     
+    def perform_create(self, serializer):
+        uid = self.kwargs.get('uid')
+        token = self.kwargs.get('token')
         user = get_token_generator().validate_uid_token(uid, token)
-        context['result'] = False
+        result = False
+
+        _password = serializer.validated_data.get('password')
         if user:
-            user.is_active = True
+            user.set_password(_password)
             user.save()
-            context['result'] = True
-            context['user'] = user
-        return context
+            result = True
+        return result
 
-
-class UpdateUserView(UpdateView):
-    model = User
-    template_name = 'user_form.html'
-    form_class = UserUpdateForm
-    success_url = reverse_lazy('user-list')
-    # pk_url_kwarg = 'pk'
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        result = self.perform_create(serializer)
+        return Response({'result': result})
+    

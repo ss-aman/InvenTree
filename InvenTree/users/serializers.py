@@ -15,4 +15,13 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
                   'username',
                   'first_name',
                   'last_name',
-                  'email',)
+                  'email',
+                  'job_role',
+                  'is_active',
+                  )
+
+
+class PasswordChangeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('password',)

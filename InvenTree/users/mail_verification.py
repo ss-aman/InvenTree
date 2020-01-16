@@ -8,15 +8,7 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 
-class AccountActivationTokenGenerator(PasswordResetTokenGenerator):
-    def _make_hash_value(self, user, timestamp):
-        return (
-            six.text_type(user.pk) + six.text_type(timestamp) +
-            six.text_type(user.is_active)
-        )
-
-
-class UserTokenVerification(AccountActivationTokenGenerator):
+class UserTokenVerification(PasswordResetTokenGenerator):
     def generate_uid_token(self, user):
         token = self.make_token(user)
         uid = urlsafe_base64_encode(force_bytes(user.pk))
