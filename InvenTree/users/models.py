@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractUser 
 from django.core.mail import send_mail
+from django.contrib import admin
 
 from django.db import models
 
@@ -24,3 +25,4 @@ class User(AbstractUser):
 
     def email_user(self, subject, message, from_email=None, **kwargs):
         send_mail(subject, message, from_email, [self.email], **kwargs)
+

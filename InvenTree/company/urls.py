@@ -6,6 +6,8 @@ URL lookup for Company app
 from django.conf.urls import url, include
 from django.views.generic.base import RedirectView
 
+from users.utils import *
+
 from . import views
 
 
@@ -28,7 +30,7 @@ company_detail_urls = [
 
 company_urls = [
 
-    url(r'new/?', views.CompanyCreate.as_view(), name='company-create'),
+    url(r'new/?', check_permission(views.CompanyCreate.as_view(), 'company.add_company'), name='company-create'),
 
     url(r'^(?P<pk>\d+)/', include(company_detail_urls)),
 

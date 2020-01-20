@@ -14,12 +14,15 @@ from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import viewsets
+from django.contrib.auth.models import Permission, Group, _user_has_module_perms, _user_has_perm
 
-# from company.models import Employee
+
+from company import models 
 
 from .serializers import UserSerializer, PasswordChangeSerializer
 
 from .mail_verification import get_token_generator
+from .utils import *
 
 User = get_user_model()
 
@@ -98,4 +101,17 @@ class AccountActivationView(generics.CreateAPIView):
         serializer.is_valid(raise_exception=True)
         result = self.perform_create(serializer)
         return Response({'result': result})
-    
+
+
+class CheckPermissions(generics.GenericAPIView):
+
+    def post(self, request, *args, **kwargs):
+        email = request.data.get('email')
+        user = User.objects.get(email=email)
+
+        perm = user.has_perm('company.add_company')
+
+        return Response({'user': user.username, 'perm': perm,})
+
+
+# class GroupAdd/
