@@ -112,6 +112,30 @@ class UserListView(ListView):
     paginated_by = 10
     context_object_name = 'user_list'
 
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        employee_type = request.GET.get('type')
+        job_role = request.GET.get('role')
+
+        filter_kwargs = {}
+        emp_kwargs = {
+            'admin': {'is_superuser': True},
+            'employee': {'is_superuser': False},
+        }
+        if employee_type:
+            filter_kwargs.update(emp_kwargs.get(employee_type, {}))
+        if job_role:
+            filter_kwargs.update({'group': job_role})
+        context['user_list'] = context['user_list'].filter(**filter_kwargs)
+        return context
+
+    def get(self, request, *args, **kwargs):
+        response = super().get(request, *args, **kwargs)
+        if request.is_ajax:
+            data = response.context['result']
+            Response(data)
+        return response    
+
 
 class CreateUserView(CreateView):
     model = User
@@ -157,4 +181,4 @@ class UpdateUserView(UpdateView):
     form_class = UserUpdateForm
     success_url = reverse_lazy('user-list')
 
-# class 
+# class Dele

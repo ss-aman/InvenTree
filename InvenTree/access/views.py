@@ -11,20 +11,17 @@ class GroupsListView(generics.ListView):
 class GroupsCreateView(generics.CreateView):
     model = Groups
     template_name = 'simple_form.html'
-    success_url = '' # put reverse url of list view here
+    success_url = reverse_lazy('group-list')
 
 
 class GroupsUpdateView(generics.UpdateView):
     model = Groups
     template_name = 'simple_form.html'
-    success_url = '' # put reverse url of list view here
+    success_url = reverse_lazy('group-list')
 
 
 class GroupsDeleteView(generics.DeleteView):
     model = Groups
     template_name = 'simple_form.html'
-    success_url = '' # put reverse url of list view here
-
-
-
+    success_url = reverse_lazy('group-list')
 
