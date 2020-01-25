@@ -13,16 +13,18 @@ JOB_ROLES = (
     ('EMPLOYEE', 'EMPLOYEE'),
 )
 
+ACTIVE_STATUS = (
+    (True, 'active'),
+    (False, 'in_active'),
+)
+
 class User(AbstractUser):
     email = models.EmailField(unique=True,
                               error_messages={
                                   'unique': "A user with that email already exists.",
                               },
                               )
-
-    job_role = models.CharField(max_length=50, choices=JOB_ROLES)
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField()
 
     def email_user(self, subject, message, from_email=None, **kwargs):
         send_mail(subject, message, from_email, [self.email], **kwargs)
-

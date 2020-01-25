@@ -13,6 +13,8 @@ urlpatterns = [
     url(r'new/?', views.GroupsCreateView.as_view(), name='group-create'),
     url(r'list/?', views.GroupsListView.as_view(), name='group-list'),
 
+    
+
     # # url(r'orders/?', views.CompanyDetail.as_view(template_name='company/orders.html'), name='company-detail-orders'),
 
     # url(r'parts/?', views.CompanyDetail.as_view(template_name='company/detail_part.html'), name='company-detail-parts'),

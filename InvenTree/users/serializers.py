@@ -16,9 +16,8 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
                   'first_name',
                   'last_name',
                   'email',
-                  'job_role',
-                  'is_active',
                   )
+
 
 
 class PasswordChangeSerializer(serializers.ModelSerializer):
